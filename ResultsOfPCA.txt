@@ -1,0 +1,30 @@
+Results of PCA Analysis:
+                                  PC1        PC2          PC3          PC4
+PubBeforeSubmission         0.6479628 -0.4512528  0.568292988  0.192414582
+OphthoSubmission            0.4180590 -0.2435880 -0.739027624  0.374580685
+FirstAuthorSubmission       0.2437846 -0.1846067 -0.050252511 -0.793403385
+FirstAuthorOphthoSubmission 0.1883957 -0.1144428 -0.321828606 -0.428974271
+PubsInProgress              0.3875290  0.5866234  0.092763987 -0.005216934
+OphthoInProgress            0.3251815  0.4303079 -0.108322431  0.044370061
+FirstAuthorInProgress       0.1770911  0.3109958  0.066225976 -0.072994661
+FirstAuthorOphthoInProgress 0.1521972  0.2526831  0.007582765 -0.042824572
+                                    PC5         PC6          PC7           PC8
+PubBeforeSubmission         -0.05852674  0.00863967  0.114170261 -0.0001159847
+OphthoSubmission             0.09207682 -0.13264570 -0.230895502  0.0057650902
+FirstAuthorSubmission        0.02380691  0.06514803 -0.518694846 -0.0248957061
+FirstAuthorOphthoSubmission  0.01666629 -0.01636695  0.813169976  0.0450139706
+PubsInProgress               0.66845649  0.08030628  0.003072509  0.2092110718
+OphthoInProgress            -0.52984995  0.57593392  0.004150642 -0.2879784273
+FirstAuthorInProgress       -0.11740889 -0.71355389  0.010724903 -0.5823634914
+FirstAuthorOphthoInProgress -0.49587504 -0.36126195 -0.056753626  0.7290216823
+
+
+Importance of components:
+                          PC1    PC2     PC3     PC4     PC5     PC6     PC7
+Standard deviation     4.1266 2.8765 1.32640 0.91486 0.85256 0.68717 0.30827
+Proportion of Variance 0.5823 0.2829 0.06016 0.02862 0.02485 0.01615 0.00325
+Cumulative Proportion  0.5823 0.8652 0.92535 0.95397 0.97882 0.99497 0.99822
+                           PC8
+Standard deviation     0.22826
+Proportion of Variance 0.00178
+Cumulative Proportion  1.00000
