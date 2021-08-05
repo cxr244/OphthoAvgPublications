@@ -1,0 +1,76 @@
+
+
+Results of PCA Analysis:
+
+PCA for Before Submission
+
+
+> pc1$rotation
+                                  PC1
+PubBeforeSubmission         0.7857001
+OphthoSubmission            0.4925205
+FirstAuthorSubmission       0.3003702
+FirstAuthorOphthoSubmission 0.2233307
+                                    PC2
+PubBeforeSubmission         -0.57850906
+OphthoSubmission             0.74675654
+FirstAuthorSubmission        0.04735109
+FirstAuthorOphthoSubmission  0.32471498
+                                   PC3
+PubBeforeSubmission          0.1874983
+OphthoSubmission             0.3812260
+FirstAuthorSubmission       -0.7986600
+FirstAuthorOphthoSubmission -0.4262081
+                                   PC4
+PubBeforeSubmission         -0.1133448
+OphthoSubmission             0.2333343
+FirstAuthorSubmission        0.5193051
+FirstAuthorOphthoSubmission -0.8142667
+> summary(pc1)
+Importance of components:
+                          PC1    PC2     PC3
+Standard deviation     3.7808 1.3193 0.91483
+Proportion of Variance 0.8424 0.1026 0.04932
+Cumulative Proportion  0.8424 0.9450 0.99433
+                           PC4
+Standard deviation     0.31013
+Proportion of Variance 0.00567
+Cumulative Proportion  1.00000
+
+
+
+
+PCA for In Progress REsearch 
+
+
+> pc2$rotation
+                                  PC1
+PubsInProgress              0.7019613
+OphthoInProgress            0.5502389
+FirstAuthorInProgress       0.3473661
+FirstAuthorOphthoInProgress 0.2895242
+                                    PC2
+PubsInProgress               0.67123714
+OphthoInProgress            -0.57938375
+FirstAuthorInProgress       -0.05618729
+FirstAuthorOphthoInProgress -0.45890975
+                                   PC3
+PubsInProgress              -0.1141399
+OphthoInProgress            -0.5329573
+FirstAuthorInProgress        0.7274336
+FirstAuthorOphthoInProgress  0.4168561
+                                   PC4
+PubsInProgress               0.2089571
+OphthoInProgress            -0.2784028
+FirstAuthorInProgress       -0.5890842
+FirstAuthorOphthoInProgress  0.7292521
+> summary(pc2)
+Importance of components:
+                          PC1     PC2     PC3
+Standard deviation     3.3126 0.86103 0.71408
+Proportion of Variance 0.8938 0.06038 0.04153
+Cumulative Proportion  0.8938 0.95415 0.99568
+                           PC4
+Standard deviation     0.23022
+Proportion of Variance 0.00432
+Cumulative Proportion  1.00000
