@@ -8,6 +8,4 @@ ExtractionCodeNoAffliation.py utilizes a python script to search for authors onl
 
 IFMasterFile.xlsx was utilized as a master file that stored the impact factors of various journals and cross-referenced with the journals extracted from the python scripts. 
 
-ResultsOfPCA.txt contains the coefficent results of principal component analysis of variables that are highly multicollinear with each other.
-
 stats2.R was used to analyze the final data and produce the tables seen in the final manuscript. 
