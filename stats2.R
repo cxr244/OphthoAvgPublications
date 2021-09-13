@@ -7,7 +7,7 @@ library(officer) # Manipulate word docs
 library(flextable) # Convert tables to word doc format 
 
 
-my_data <- read_excel("C:/Chandru/CWRU/Research/CCF/OphthoAvgPubsPaper/StatsTest.xlsx", sheet="Sheet1")
+my_data <- read_excel("C:/Chandru/CWRU/Research/OphthoAvgPubsPaper/StatsTest.xlsx", sheet="Sheet1")
 
 # Make sure all applicants are accounted for, some are missing with 0 and not recorded in sus authors? 
 
@@ -200,65 +200,134 @@ CombinedTable1 <- tbl_merge (
                 gtsummary::as_flextable()
 
 
-data1 <- my_data %>% select(PubBeforeSubmission, OphthoSubmission, FirstAuthorSubmission,
-                            FirstAuthorOphthoSubmission)
-pc1 <- prcomp(data1, scale. = FALSE)
-pc1$rotation
-summary(pc1)
 
-data2 <- my_data %>% select(PubsInProgress, OphthoInProgress, 
-                            FirstAuthorInProgress, FirstAuthorOphthoInProgress)
+# Univariate regression
 
-pc2 <- prcomp(data2, scale. = FALSE)
-pc2$rotation
-summary(pc2)
+univariate <- tbl_uvregression( my_data %>% select(Gender, TopMedSchool, TopDoximity, PubBeforeSubmission, OphthoSubmission,
+        FirstAuthorSubmission, FirstAuthorOphthoSubmission, HighestIFSubmission, AverageIFSubmission, 
+        PubsInProgress, OphthoInProgress, FirstAuthorInProgress, FirstAuthorOphthoInProgress, 
+        HighestIF, AverageIF), method = glm, y = TopDoximity, exponentiate = TRUE , label = list(
+        Gender ~ "Gender",
+        TopMedSchool ~ "Top 40 US News Medical School: Research", 
+        TopDoximity ~ "Top 20 Doximity Ranked Program",
+        PubBeforeSubmission ~ "Number of Publications", 
+        OphthoSubmission ~ "Ophthalmology Publications",
+        FirstAuthorSubmission ~ "First Author Publications",
+        FirstAuthorOphthoSubmission ~ "First Author Ophthalmology Publications",
+        HighestIFSubmission ~ "Highest Impact Factor of Publications",
+        AverageIFSubmission ~ "Average Impact Factor of Publications",         
+        PubsInProgress ~ "Number Of Publications",        
+        OphthoInProgress ~ "Ophthalmology Publications",        
+        FirstAuthorInProgress ~ "First Author Publications",        
+        FirstAuthorOphthoInProgress ~ "First Author Ophthalmology Publications",
+        HighestIF ~ "Highest Impact Factor of Publications",         
+        AverageIF ~ "Average Impact Factor of Publications")) %>% bold_labels() %>% 
+        bold_p(t = 0.05) %>% modify_header(estimate = "Odds Ratio") %>% 
+        gtsummary::as_flextable()
+# Multivariate based on univariate regression 
 
-
-my_data <- my_data %>% mutate(
-         PCA1 = 0.7857 * PubBeforeSubmission + 0.4925 * OphthoSubmission +
-            0.30037 * FirstAuthorSubmission + 0.22333 * FirstAuthorOphthoSubmission,
-         PCA2 = 0.702 * PubsInProgress + 0.550 * OphthoInProgress +
-            0.3474 * FirstAuthorInProgress + 0.2895 * FirstAuthorOphthoInProgress,
-         TopSchool = ifelse(TopMedSchool == 1, "Yes", "No"))
-toptwentysubmission <- glm(TopDoximity ~ PCA1 + HighestIFSubmission + 
-        AverageIFSubmission + Gender + TopSchool, data=my_data, family =binomial())
-Table5 <- toptwentysubmission %>% tbl_regression(exponentiate = TRUE, 
-        label = list(
-        PCA1 ~ "ComponentAnalysisVariable",
-        HighestIFSubmission ~ "Highest Impact Factor of Publications Before Submission", 
-        AverageIFSubmission ~ "Average Impact Factor of Publications Before Submission", 
-        TopSchool ~ "Top 40 US News Medical School: Research",
-        Gender ~ "Gender (Reference = Female)"),
-        digits = all_continuous() ~ 1) %>% 
-        bold_labels() %>% 
-        bold_p(t = 0.05) %>% modify_header(estimate = "Odds Ratio")
-
-
-toptwentyInProgress <- glm(TopDoximity ~ PCA2 + 
-        HighestIF + AverageIF + 
-        Gender + TopSchool, data = my_data,
+multivariateRegression <- glm(TopDoximity ~ TopMedSchool + FirstAuthorSubmission +
+                            PubsInProgress, data = my_data,
                 family = binomial())
-Table6 <- toptwentyInProgress %>% tbl_regression(exponentiate = TRUE, 
+multivariate <- multivariateRegression %>% tbl_regression(exponentiate = TRUE, 
                 label = list(
-        PCA2 ~ "Component Analysis Variable",
-        HighestIF ~ "Highest Impact Factor of all Publications",
-        AverageIF ~ "Average Impact Factor of all Publications",
-        TopSchool ~ "Top 40 US News Medical School: Research",
-        Gender ~ "Gender (Reference = Female)"),
+                TopMedSchool ~ "Top 40 US News Medical School: Research", 
+                FirstAuthorSubmission ~ "First Author Publications",         
+                PubsInProgress ~ "Number Of Publications"),
         digits = all_continuous() ~ 1) %>% 
                 bold_labels() %>% 
-                bold_p(t = 0.05) %>% modify_header(estimate = "Odds Ratio")
-CombinedTableRegression <- tbl_merge (
-                tbls = list(Table5, Table6), 
-                tab_spanner = c("**Before Submission**", "**In Progress**")) %>% 
-                gtsummary::as_flextable()
+                bold_p(t = 0.05) %>% modify_header(estimate = "Odds Ratio") %>% 
+        gtsummary::as_flextable()
+
+
+# Principle component analysis multivariate regression 
+# data1 <- my_data %>% select(PubBeforeSubmission, OphthoSubmission, FirstAuthorSubmission,
+#                             FirstAuthorOphthoSubmission)
+# pc1 <- prcomp(data1, scale. = FALSE)
+# pc1$rotation
+# summary(pc1)
+
+# data2 <- my_data %>% select(PubsInProgress, OphthoInProgress, 
+#                             FirstAuthorInProgress, FirstAuthorOphthoInProgress)
+
+# pc2 <- prcomp(data2, scale. = FALSE)
+# pc2$rotation
+# summary(pc2)
+
+# data3 <- my_data %>% select(PubBeforeSubmission, OphthoSubmission, FirstAuthorSubmission,
+#                             FirstAuthorOphthoSubmission, PubsInProgress, OphthoInProgress, 
+#                             FirstAuthorInProgress, FirstAuthorOphthoInProgress)
+# pc3 <- prcomp(data3, scale. = FALSE)
+# pc3$rotation
+# summary(pc3)
+
+# my_data <- my_data %>% mutate(
+#          PCA1 = 0.7857 * PubBeforeSubmission + 0.4925 * OphthoSubmission +
+#             0.30037 * FirstAuthorSubmission + 0.22333 * FirstAuthorOphthoSubmission,
+#          PCA2 = 0.702 * PubsInProgress + 0.550 * OphthoInProgress +
+#             0.3474 * FirstAuthorInProgress + 0.2895 * FirstAuthorOphthoInProgress,
+#          PCA3 = 0.6480 * PubBeforeSubmission + 0.4181 * OphthoSubmission +
+#             0.2438 * FirstAuthorSubmission + 0.1884 * FirstAuthorOphthoSubmission +
+#             0.3875 * PubsInProgress + 0.3252 * OphthoInProgress +
+#             0.1771 * FirstAuthorInProgress + 0.1522 * FirstAuthorOphthoInProgress, 
+#          PCA4 = -0.4513 * PubBeforeSubmission - 0.2436 * OphthoSubmission -
+#             0.1846 * FirstAuthorSubmission - 0.1144 * FirstAuthorOphthoSubmission +
+#             0.5866 * PubsInProgress + 0.4303 * OphthoInProgress +
+#             0.3110 * FirstAuthorInProgress + 0.2527 * FirstAuthorOphthoInProgress,
+#          PCA5 = PCA3 + PCA4, 
+#          TopSchool = ifelse(TopMedSchool == 1, "Yes", "No"))
+# toptwentysubmission <- glm(TopDoximity ~ PCA1 + HighestIFSubmission + 
+#         AverageIFSubmission + Gender + TopSchool, data=my_data, family =binomial())
+# Table5 <- toptwentysubmission %>% tbl_regression(exponentiate = TRUE, 
+#         label = list(
+#         PCA1 ~ "ComponentAnalysisVariable",
+#         HighestIFSubmission ~ "Highest Impact Factor of Publications Before Submission", 
+#         AverageIFSubmission ~ "Average Impact Factor of Publications Before Submission", 
+#         TopSchool ~ "Top 40 US News Medical School: Research",
+#         Gender ~ "Gender (Reference = Female)"),
+#         digits = all_continuous() ~ 1) %>% 
+#         bold_labels() %>% 
+#         bold_p(t = 0.05) %>% modify_header(estimate = "Odds Ratio")
+
+
+# toptwentyInProgress <- glm(TopDoximity ~ PCA2 + 
+#         HighestIF + AverageIF + 
+#         Gender + TopSchool, data = my_data,
+#                 family = binomial())
+# Table6 <- toptwentyInProgress %>% tbl_regression(exponentiate = TRUE, 
+#                 label = list(
+#         PCA2 ~ "Component Analysis Variable",
+#         HighestIF ~ "Highest Impact Factor of all Publications",
+#         AverageIF ~ "Average Impact Factor of all Publications",
+#         TopSchool ~ "Top 40 US News Medical School: Research",
+#         Gender ~ "Gender (Reference = Female)"),
+#         digits = all_continuous() ~ 1) %>% 
+#                 bold_labels() %>% 
+#                 bold_p(t = 0.05) %>% modify_header(estimate = "Odds Ratio")
+# CombinedTableRegression <- tbl_merge (
+#                 tbls = list(Table5, Table6), 
+#                 tab_spanner = c("**Before Submission**", "**In Progress**")) %>% 
+#                 gtsummary::as_flextable()
+
+# toptwenty <- glm(TopDoximity ~ PCA5 + HighestIF + AverageIF + Gender + TopSchool, data=my_data, family =binomial())
+# Table7 <- toptwenty %>% tbl_regression(exponentiate = TRUE, 
+#         label = list(
+#         PCA5 ~ "Component Analysis Variable", 
+#         HighestIF ~ "Highest Impact Factor of all Publications",
+#         AverageIF ~ "Average Impact Factor of all Publications",
+#         TopSchool ~ "Top 40 US News Medical School: Research",
+#         Gender ~ "Gender (Reference = Female)"),
+#         digits = all_continuous() ~ 1) %>% 
+#         bold_labels() %>% 
+#         bold_p(t = 0.05) %>% modify_header(estimate = "Odds Ratio") %>% 
+#                 gtsummary::as_flextable()
 
 CombinedTable12 <- width(CombinedTable12, j= ~label, width=1.5)
 CombinedTable12 <- width(CombinedTable12, j= ~stat_0_1+stat_1_2+stat_2_2+p.value_2, width=0.75)
 CombinedTable34 <- width(CombinedTable34, j= ~label, width=1.5)
 CombinedTable34 <- width(CombinedTable34, j= ~stat_1_1+stat_2_1+p.value_1+stat_1_2+stat_2_2+p.value_2, width=0.75)
-CombinedTableRegression <- width(CombinedTableRegression, j= ~label, width=1.5)
-CombinedTableRegression <- width(CombinedTableRegression, j= ~estimate_1+ci_1+p.value_1+estimate_2+ci_2+p.value_2, width=0.75)
+# CombinedTableRegression <- width(CombinedTableRegression, j= ~label, width=1.5)
+# CombinedTableRegression <- width(CombinedTableRegression, j= ~estimate_1+ci_1+p.value_1+estimate_2+ci_2+p.value_2, width=0.75)
 
 
 doc <- read_docx() 
@@ -268,7 +337,16 @@ doc <- body_add_flextable(doc,value= CombinedTable12) %>% body_add_break()
 doc <- body_add_par(doc, value="Table 2 - TopMed + TopDoximity", style="heading 1")
 doc <- body_add_flextable(doc,value= CombinedTable34) %>% body_add_break()
 
-doc <- body_add_par(doc, value="Table 3 - Regression", style="heading 1")
-doc <- body_add_flextable(doc,value= CombinedTableRegression) %>% body_add_break()
+# doc <- body_add_par(doc, value="Table 3 - Regression", style="heading 1")
+# doc <- body_add_flextable(doc,value= CombinedTableRegression) %>% body_add_break()
 
-print(doc, target="C:/Chandru/CWRU/Research/CCF/OphthoAvgPubsPaper/Tables3.docx")
+# doc <- body_add_par(doc, value="Table 4 - Regression with all variables", style="heading 1")
+# doc <- body_add_flextable(doc,value= Table7 ) %>% body_add_break()
+
+doc <- body_add_par(doc, value="Univariate Regression", style="heading 1")
+doc <- body_add_flextable(doc,value= univariate ) %>% body_add_break()
+
+doc <- body_add_par(doc, value="Multivariate Regression", style="heading 1")
+doc <- body_add_flextable(doc,value= multivariate ) %>% body_add_break()
+
+print(doc, target="C:/Chandru/CWRU/Research/OphthoAvgPubsPaper/Tables3.docx")
